@@ -1,0 +1,61 @@
+## ☁️ AWS EC2 Instance Configuration
+
+The project was deployed on an **AWS EC2 Ubuntu Server** with the following configuration:
+
+| Configuration | Value |
+|--------------|-------|
+| Operating System | Ubuntu Server |
+| Instance Type | t3.micro |
+| Root Volume | **20 GB** (gp3) |
+| Region | eu-north-1 |
+| Access Method | SSH |
+
+> **Note:** I configured the EC2 root volume with **20 GB** of storage instead of the default size. This provided sufficient disk space for installing **Jenkins**, **Docker**, plugins, Docker images, containers, and Jenkins workspaces without running into storage limitations.
+
+---
+
+## 📖 Jenkins Installation
+
+For this project, I preferred using the **official Jenkins documentation** instead of relying on third-party tutorials.
+
+During the installation, I encountered repository configuration and package compatibility issues because I was using **Ubuntu 26.04 LTS**, which was not fully supported by Jenkins at the time. Referring to the official documentation helped me troubleshoot these issues and complete the installation using the recommended approach.
+
+🔗 Official Documentation:
+https://www.jenkins.io/doc/book/installing/linux/
+
+---
+
+## 🐳 Jenkins and Docker Integration
+
+To enable Jenkins pipelines to execute Docker commands, I integrated Jenkins with Docker by granting the Jenkins user permission to access the Docker daemon.
+
+### Configuration Steps
+
+1. Install Docker.
+2. Start and enable the Docker service.
+3. Add the Jenkins user to the Docker group.
+4. Restart both Docker and Jenkins services.
+5. Verify that Jenkins can execute Docker commands.
+
+```bash
+sudo usermod -aG docker jenkins
+sudo systemctl restart docker
+sudo systemctl restart jenkins
+sudo -u jenkins docker ps
+```
+
+After completing these steps, Jenkins was able to build Docker images and manage Docker containers directly from pipeline jobs.
+
+---
+
+## 💡 Why 20 GB Storage?
+
+Although a basic Jenkins installation requires only a few gigabytes, additional storage is recommended when working with Docker and CI/CD pipelines because:
+
+- Jenkins plugins consume additional disk space.
+- Build artifacts and workspace files accumulate over time.
+- Docker images and containers require significant storage.
+- Docker volumes and caches increase disk usage.
+- Future CI/CD projects can be accommodated without resizing the instance.
+
+Using a **20 GB root volume** provides a stable environment for Jenkins, Docker, and future DevOps projects.
