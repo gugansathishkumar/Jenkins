@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Hello') {
+            steps {
+                echo 'Hello, Jenkins!'
+            }
+        }
+
+        stage('System Information') {
+            steps {
+                sh 'hostname'
+                sh 'pwd'
+                sh 'whoami'
+                sh 'java -version'
+            }
+        }
+
+        stage('Complete') {
+            steps {
+                echo 'Pipeline executed successfully!'
+            }
+        }
+    }
+}
