@@ -123,3 +123,29 @@ Through this integration, I learned:
 - Running Docker commands from Jenkins pipelines
 - Automating tasks using Jenkins Pipeline
 - Understanding the foundation of CI/CD workflows
+
+## ⚠️ Important Note
+
+While working on this project, I noticed that after installing new Jenkins plugins or making configuration changes, the updates may not take effect immediately.
+
+To ensure all changes are applied correctly, it is recommended to restart the Jenkins service.
+
+```bash
+sudo systemctl restart jenkins
+```
+
+If you are running Jenkins inside a Docker container, restart the container instead:
+
+```bash
+docker restart jenkins
+```
+
+Restarting Jenkins helps:
+
+- Apply newly installed plugins
+- Refresh system configurations
+- Resolve plugin loading issues
+- Ensure pipeline changes are recognized
+- Maintain stable Jenkins performance
+
+> **Tip:** Whenever you install new plugins, update Jenkins configurations, or modify system settings, it is a good practice to restart Jenkins before running your pipeline.
