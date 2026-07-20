@@ -1,122 +1,81 @@
-# 🚀 Jenkins + Docker CI/CD Setup on AWS EC2
+# 🐳 Jenkins + Docker Integration
 
-A hands-on DevOps project demonstrating how to set up **Jenkins** with **Docker** on an **AWS EC2 Ubuntu** instance and create a basic CI/CD pipeline using a **Jenkinsfile**.
-
----
-
-## 📌 Project Overview
-
-This project showcases the installation and configuration of Jenkins and Docker on an AWS EC2 instance. It also demonstrates how to configure Jenkins to communicate with Docker and execute a simple pipeline successfully.
-
-The goal of this project is to gain practical experience with Continuous Integration (CI), Docker integration, and Jenkins pipeline automation.
+This project integrates **Jenkins** with **Docker** to enable Jenkins pipelines to execute Docker commands directly on the AWS EC2 instance.
 
 ---
 
-## 🛠️ Technologies Used
+## 📌 Why Integrate Jenkins with Docker?
 
-- AWS EC2
-- Ubuntu Linux
-- Jenkins
-- Docker
-- Git & GitHub
-- Jenkins Pipeline (Pipeline as Code)
+By default, the Jenkins user does not have permission to interact with the Docker daemon. To allow Jenkins pipelines to build Docker images and manage containers, the Jenkins user must be added to the Docker group.
 
 ---
 
-## ⚙️ Project Architecture
+## ⚙️ Integration Steps
 
-```text
-GitHub Repository
-        │
-        ▼
-     Jenkins
-        │
-        ▼
- Execute Pipeline
-        │
-        ▼
-Docker Engine on EC2
-        │
-        ▼
- Build & Execute Tasks
-```
-
----
-
-## 📂 Project Workflow
-
-### 1️⃣ Launch AWS EC2 Instance
-
-- Created an Ubuntu EC2 instance
-- Configured the Security Group
-- Connected using SSH
-
-### 2️⃣ Install Java
-
-Installed Java, which is required to run Jenkins.
+### Step 1: Install Docker
 
 ```bash
 sudo apt update
-sudo apt install openjdk-21-jdk -y
-java -version
-```
-
----
-
-### 3️⃣ Install Jenkins
-
-- Added the Jenkins repository
-- Installed Jenkins
-- Started and enabled the Jenkins service
-
-```bash
-sudo systemctl enable jenkins
-sudo systemctl start jenkins
-```
-
----
-
-### 4️⃣ Install Docker
-
-Installed Docker Engine and verified the installation.
-
-```bash
 sudo apt install docker.io -y
+```
+
+Verify Docker installation:
+
+```bash
 docker --version
 ```
 
 ---
 
-### 5️⃣ Configure Docker Permissions
+### Step 2: Start and Enable Docker
 
-Allowed the Jenkins user to access Docker without requiring root privileges.
+```bash
+sudo systemctl enable docker
+sudo systemctl start docker
+```
+
+Check Docker status:
+
+```bash
+sudo systemctl status docker
+```
+
+---
+
+### Step 3: Add Jenkins User to Docker Group
+
+Grant Docker permissions to the Jenkins user.
 
 ```bash
 sudo usermod -aG docker jenkins
+```
+
+---
+
+### Step 4: Restart Services
+
+```bash
 sudo systemctl restart docker
 sudo systemctl restart jenkins
 ```
 
-Verify Docker access:
+---
+
+### Step 5: Verify Docker Access
+
+Run the following command to ensure the Jenkins user can access Docker.
 
 ```bash
 sudo -u jenkins docker ps
 ```
 
----
-
-### 6️⃣ Configure Jenkins
-
-- Accessed Jenkins through the browser
-- Installed recommended plugins
-- Created the administrator account
-- Configured Jenkins successfully
+If no permission errors are displayed, the integration has been completed successfully.
 
 ---
 
-### 7️⃣ Create a Pipeline Job
+# 🚀 Jenkins Pipeline
 
-Created a Pipeline project and added the following Jenkinsfile.
+The following pipeline verifies the Docker installation.
 
 ```groovy
 pipeline {
@@ -124,97 +83,43 @@ pipeline {
 
     stages {
 
-        stage('Hello') {
+        stage('Docker Version') {
             steps {
-                echo 'Hello, Jenkins!'
+                sh 'docker --version'
             }
         }
 
-        stage('System Information') {
+        stage('Running Containers') {
             steps {
-                sh 'hostname'
-                sh 'pwd'
-                sh 'whoami'
-                sh 'java -version'
+                sh 'docker ps'
             }
         }
 
-        stage('Complete') {
-            steps {
-                echo 'Pipeline executed successfully!'
-            }
-        }
     }
 }
 ```
 
 ---
 
-## ✅ Pipeline Result
+# ✅ Expected Output
 
-The pipeline completed successfully and displayed:
+```
+Docker version 28.x.x
 
-- Hostname
-- Current Workspace
-- Logged-in User
-- Java Version
-- Successful Build Status
+CONTAINER ID   IMAGE   STATUS   PORTS
+```
 
----
-
-## 📷 Project Screenshots
-
-Include screenshots of:
-
-- Jenkins Dashboard
-- AWS EC2 Instance
-- Docker Installation
-- Docker Permission Configuration
-- Jenkins Pipeline Configuration
-- Successful Pipeline Execution
-- Console Output
+This confirms that Jenkins is successfully connected to Docker and can execute Docker commands.
 
 ---
 
-## 📚 Key Learning Outcomes
+# 📚 Learning Outcomes
 
-Through this project, I gained hands-on experience with:
+Through this integration, I learned:
 
-- Jenkins Installation & Configuration
-- Docker Installation
-- Jenkins-Docker Integration
-- Linux User & Group Management
-- CI/CD Pipeline Creation
-- Jenkinsfile Syntax
-- Pipeline as Code
-- AWS EC2 Administration
-- DevOps Best Practices
-
----
-
-## 🚀 Future Improvements
-
-- Build Docker Images automatically
-- Push Images to Docker Hub
-- Integrate GitHub Webhooks
-- Deploy Applications using Docker
-- Add SonarQube for Code Quality
-- Integrate Maven Builds
-- Automate Deployments with Ansible
-- Extend the pipeline to Kubernetes
-
----
-
-## 👨‍💻 Author
-
-**Gugan Sathish Kumar**
-
-🎓 Aspiring DevOps Engineer
-
-🔗 GitHub: https://github.com/gugansathishkumar
-
-🔗 LinkedIn: https://www.linkedin.com/in/gugansathishkumar
-
----
-
-⭐ If you found this project useful, consider giving the repository a **Star**.
+- Installing Docker on Ubuntu
+- Configuring Jenkins with Docker
+- Managing Linux user permissions
+- Running Docker commands from Jenkins pipelines
+- Automating tasks using Jenkins Pipeline
+- Understanding the foundation of CI/CD workflows
